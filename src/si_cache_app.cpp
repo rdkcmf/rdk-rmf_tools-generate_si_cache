@@ -78,7 +78,7 @@ bool processCommandLine(int argc, char** argv, string& mode, string& input_file,
         }
 	else if(std::string(argv[i]) == "-version")
 	{
-    	    printf("RDK SI CACHE CONVERTER - %s\nCopyright (C) 2015 RDK Management, LLC. All rights reserved.\n", PACKAGE_VERSION);
+    	    printf("RDK SI CACHE CONVERTER - %s\nCopyright 2016 RDK Management, Licensed under the Apache License,Version 2.0\n", PACKAGE_VERSION);
 	    return false;
 	}
         else if(std::string(argv[i]) == "-mode")
