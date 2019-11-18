@@ -29,6 +29,10 @@
 #include <libxml/encoding.h>
 #include <libxml/xmlwriter.h>
 
+/**
+ * @addtogroup SI_CACHE_TYPES
+ * @{
+ */
 
 uint32_t crctab[256];
 
@@ -57,6 +61,23 @@ SiManager::SiManager()
     numOfServices = 0;
 }
 
+/**
+ * @}
+ */
+
+/**
+ * @addtogroup SI_CACHE_APIS
+ * @{
+ */
+
+/**
+ * @brief This API parses the program id, source id, modulation, frequency information from the XML.
+ *
+ * @param[in]  parent  First child node of XML.
+ *
+ * @return Returns status of the operation.
+ * @retval 0 on sucess, appropiate error code otherwise.
+ */
 int SiManager::xml_parse_attributes(xmlNodePtr parent)
 {
         xmlChar* pVal = NULL;
@@ -139,6 +160,14 @@ int SiManager::xml_parse_attributes(xmlNodePtr parent)
        return 0;
 }
 
+/**
+ * @brief This function loads an input xml file into memory, it does the formatting related validations and parses the attributes.
+ *
+ * @param[in]  xml_file     XML file name.
+ *
+ * @return Returns status of the operation.
+ * @retval True on sucess, False on failure.
+ */
 bool SiManager::load_xml_file(string xml_file)
 {
     xmlDocPtr doc;
@@ -176,6 +205,9 @@ bool SiManager::load_xml_file(string xml_file)
     return TRUE;
 }
 
+/**
+ * @brief Initializes the CRC check.
+ */
 void SiManager::init_mpeg2_crc(void)
 {
     uint16_t i, j;
@@ -195,6 +227,20 @@ void SiManager::init_mpeg2_crc(void)
     }
 } // END crc32_init()
 
+/**
+ * @brief Function to calculate Cyclic Redundancy Check(CRC) value.
+ * CRC is used to find the accidental changes happened to raw data. Here is the CRC flow works here.
+ * 1. Check the SICache file version.
+ * 2. If version doesnt match delete it and get a new version of SICache file and write CRC to the end of SICache file.
+ * 3. If version matches, verify the CRC.
+ * 4. If CRC doesnt match, delete it and get a new version of SICache file and write CRC to the end of SICache file.
+ * 5. if version & CRC matches, load the cache and start using it.
+ *
+ * @param[in]  data    Binary cache file(SICache file).
+ * @param[in]  len     Size of the file.
+ *
+ * @return Returns CRC value.
+ */
 uint32_t SiManager::calc_mpeg2_crc(uint8_t * data, uint32_t len)
 {
     uint32_t result;
@@ -219,12 +265,12 @@ uint32_t SiManager::calc_mpeg2_crc(uint8_t * data, uint32_t len)
 } // END calc_mpeg2_crc()
 
 /**
- * The <i>si_get_file_size()</i> function will get the size the specified file.
+ * @brief The <i>si_get_file_size()</i> function will get the size of the specified file.
  *
- * @param fileName Is a pointer for the name of the file
- * @param size Is the size to file to be checked.
- * @return The size of the given file. -1 if the file not present or any other failure.
- *          is returned.
+ * @param[in] location   XML filename 
+ * 
+ * @return The size of the given file.
+ * @retval  -1 if the file not present or any other failure.
  */
 unsigned int SiManager::get_file_size(const char * location)
 {
@@ -238,6 +284,14 @@ unsigned int SiManager::get_file_size(const char * location)
     return -1;
 }
 
+/**
+ * @brief This API finds the CRC value and writes at the end of SI cache file.
+ *
+ * @param[in]  sidbFileName  Binary SI Cache file.
+ *
+ * @return Returns status of the operation.
+ * @retval True on sucess, False on failure.
+ */
 bool SiManager::write_crc_for_si_cache(string sidbFileName)
 {
     int fd=0;
@@ -301,6 +355,15 @@ bool SiManager::write_crc_for_si_cache(string sidbFileName)
 
 }
 
+/**
+ * @brief This finds the CRC and write it at the end of SI and SNS cache files.
+ *
+ * @param[in]  sidbFileName   Binary SI Cache file.
+ * @param[in]  snsdbFileName  Binary SNS cache file. 
+ *
+ * @return Returns status of the operation.
+ * @retval True on sucess, False on failure.
+ */
 bool SiManager::write_crc_for_si_and_sns_cache(string sidbFileName, string snsdbFileName)
 {
     int fd=0;
@@ -389,14 +452,12 @@ bool SiManager::write_crc_for_si_and_sns_cache(string sidbFileName, string snsdb
 }
 
 /**
- *  Internal Method to initialize service entries to default values
- *
+ * @brief Internal Method to initialize service entries to default values
  * <i>init_si_entry()</i>
  *
- * @param si_entry is the service entry to set the default values for
+ * @param[in] si_entry  Service entry to set the default values for.
  *
  * @return  None
- *
  */
 void SiManager::init_si_entry(siTableEntry *si_entry)
 {
@@ -429,6 +490,17 @@ void SiManager::init_si_entry(siTableEntry *si_entry)
     si_entry->scrambled = FALSE;
 }
 
+/**
+ * @brief This API loads the program data from binary cache file.
+ *
+ * It checks for the version information and CRC Value and proceeds further in reading modulation, frequency,
+ * program number and Virtual channel number.
+ *
+ * @param[in]  sidbFileName  Binary SI Cache file.
+ *
+ * @return Returns status of the operation.
+ * @retval True on sucess, False on failure.
+ */
 bool SiManager::parse_program_details(siTableEntry **si_entry_head, uint32_t frequency[], uint32_t modulation[], int& f_index, int& m_index)
 {
     int i;
@@ -500,6 +572,14 @@ bool SiManager::parse_program_details(siTableEntry **si_entry_head, uint32_t fre
     return ret;
 }
 
+/**
+ * @brief This API write the program details like modulation, frequency, program number, VCN information to SI cache file.
+ *
+ * @param[in]  sidbFileName  Binary SI Cache file.
+ *
+ * @return Returns status of the operation.
+ * @retval True on sucess, False on failure.
+ */
 bool SiManager::cache_si_data ( string sidbFileName)
 {
 	int ret, fd;
@@ -580,6 +660,15 @@ bool SiManager::cache_si_data ( string sidbFileName)
         return TRUE;
 }
 
+/**
+ * @brief This API write the program details like modulation, frequency, program number, VCN information to SI cache file.
+ * SNS cache is used to store the data available in NTT(Network Text Tables) by legacy boxes.It contains source id and corresponding source name(channel name) mappings.
+ *
+ * @param[in]  snsdbFileName  Binary SNS Cache file.
+ *
+ * @return Returns status of the operation.
+ * @retval True on sucess, False on failure.
+ */
 bool SiManager::cache_sns_data ( string snsdbFileName )
 {
     SourceNameEntry *sn_entry=NULL, *sn_entry_head=NULL;
@@ -641,6 +730,17 @@ bool SiManager::cache_sns_data ( string snsdbFileName )
     return TRUE;
 }
 
+/**
+ * @brief This API function loads the program data from binary cache file.
+ *
+ * It checks for the version information and CRC Value and proceeds further for reading modulation, frequency,
+ * program number and Virtual channel number.
+ *
+ * @param[in]  sidbFileName  Binary SI Cache file.
+ *
+ * @return Returns status of the operation.
+ * @retval True on sucess, False on failure.
+ */
 bool SiManager::load_si_data(string sidbFileName)
 {
     int fd=0, version=0, count=0, size=0;
@@ -768,6 +868,20 @@ bool SiManager::load_si_data(string sidbFileName)
     return ret;
 }
 
+/**
+ * @brief This API is to load program data from XML file, if the operation mode selected is XML to Binary.
+ * Otherwise it will load program data from cache file.
+ *
+ * It will also display number of available services.
+ *
+ * @param[in]  file_name       It can be an XML file or a binary SI Cache file depending on the operation mode.
+ * @param[in]  mode            Operation mode. It can be one of the following:
+ *                                xtob - Generate SI Cache binaries from the given XML file
+ *                                btox - Generate SI Cache XML file from the given binary file
+ *
+ * @return Returns status of the operation.
+ * @retval True on sucess, False on failure.
+ */
 bool SiManager::Load(string file_name, int mode)
 {
 	bool ret = FALSE;
@@ -799,6 +913,9 @@ bool SiManager::Load(string file_name, int mode)
 	return ret;
 }
 
+/**
+ * @brief  Dump channel map information from binary SI cache to console.
+ */
 void SiManager::DumpChannelMap()
 {
     list<ProgramDetails>::iterator p;
@@ -811,6 +928,14 @@ void SiManager::DumpChannelMap()
     cout << endl;
 }
 
+/**
+ * @brief  Generates binary SI cache from the XML file.
+ *
+ * @param[out] sidbFileName      Binary SI Cache file
+ *
+ * @return Returns status of the operation.
+ * @retval True on sucess, False on failure.
+ */
 bool SiManager::GenerateSICache ( string sidbFileName )
 {
     if(!cache_si_data(sidbFileName))
@@ -828,6 +953,15 @@ bool SiManager::GenerateSICache ( string sidbFileName )
     printf("Binary file [%s] generated successfully\n", sidbFileName.c_str()); 
 }
 
+/**
+ * @brief Generate both binary SI cache and binary SNS cache from the XML file
+ *
+ * @param[out] sidbFileName      Binary SI Cache file
+ * @param[out] snsdbFileName     Binary SNS cache file
+ *
+ * @return Returns status of the operation.
+ * @retval True on sucess, False on failure.
+ */
 bool SiManager::GenerateSICache ( string sidbFileName, string snsdbFileName )
 {
     printf("Generating SI Cache [%s] from extracted program details\n", sidbFileName.c_str());
@@ -853,6 +987,21 @@ bool SiManager::GenerateSICache ( string sidbFileName, string snsdbFileName )
     printf("Binary files [%s] and [%s] generated successfully\n", sidbFileName.c_str(), snsdbFileName.c_str()); 
 }
 
+/**
+ * @brief Function to generate XML file(sidb.xml).
+ *
+ * It uses standard libxml2 methods for XML file creation.
+ * XML of the format:
+ * <?xml version="1.0" encoding="UTF-8"?>
+ * <SIDB>
+ * <program sourceid="162" program_number="65535" carrier_frequency="179" modulation_mode="674000000" virtual_channel_number="4"/>
+ * </SIDB>
+ *
+ * @param[out]  sixmlFileName  XML file
+ *
+ * @return Returns status of the operation.
+ * @retval True on sucess, False on failure.
+ */
 bool SiManager::GenerateXML (string sixmlFileName)
 {
 	xmlTextWriterPtr writer;
@@ -885,3 +1034,9 @@ bool SiManager::GenerateXML (string sixmlFileName)
 	xmlFreeTextWriter(writer);
         printf("XML file [%s] generated successfully\n", sixmlFileName.c_str()); 
 }
+
+/**
+ * @}
+ */
+
+
