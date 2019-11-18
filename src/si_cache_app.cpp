@@ -16,6 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
+/**
+ * @file si_cache_app.cpp
+ * @brief SICache is used for tuning and showing video.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -28,10 +34,47 @@
 
 using namespace std;
 
+
+/**
+* @defgroup rmf_tools rmf tools
+*
+* @defgroup SI_CACHE   Generate SI cache
+* @ingroup  rmf_tools
+*
+* @defgroup SI_CACHE_TYPES SI Cache Data Types
+* @ingroup  SI_CACHE
+*
+* @defgroup SI_CACHE_APIS  SI Cache APIs
+* @ingroup  SI_CACHE
+*
+**/
+
+
+/**
+ * @addtogroup SI_CACHE_TYPES
+ * @{
+ */
+
 #define MODE_XML_TO_BINARY "xtob"
 #define MODE_BINARY_TO_XML "btox"
 #define MODE_DUMP_TO_CONSOLE "dump"
 
+/**
+ * @}
+ */
+
+/**
+ * @addtogroup SI_CACHE_APIS
+ * @{
+ */
+
+/**
+ * @brief This function displays the brief usage message for the tool.
+ *
+ * It includes the usage of the tool, description, options and examples.
+ 
+ * @param[in] app_name  Indicates the options for the tools
+ */
 void printUsage(char *app_name)
 {
     printf("\nRDK SI CACHE CONVERTER \t- User's Manual\n");
@@ -59,6 +102,22 @@ void printUsage(char *app_name)
  
 }
 
+/**
+ * @brief This API scans parameters from the command line. 
+ *
+ * @param[in]  argc             Number of parameters
+ * @param[in]  argv             Parameter list
+ * @param[in]  mode             Operation mode. It can be one of the following:
+ *                                xtob - Generate SI Cache binaries from the given XML file
+ *                                btox - Generate SI Cache XML file from the given binary file
+ *                                dump - Dump channel map from the given binary file to console
+ * @param[in]  input_file        Input file. It can be an XML file or a binary SI Cache file depending on the operation mode
+ * @param[out] output_file       Output file. It can be a binary SI Cache file or an XML file depending on the operation mode
+ * @param[out] output_file_sns   Binary SNS Cache file to be generated. To use this option, the mode should be set to 'xtob'.
+ *
+ * @return Returns status of the operation.
+ * @retval True on sucess, False on failure.
+ */
 bool processCommandLine(int argc, char** argv, string& mode, string& input_file, string& output_file, string& output_file_sns)
 {
     int idx;
@@ -190,4 +249,9 @@ int main(int argc, char ** argv)
 
     return ret;
 }
+
+/**
+ * @}
+ */
+
 

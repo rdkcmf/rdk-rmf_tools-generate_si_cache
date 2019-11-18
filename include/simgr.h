@@ -31,6 +31,11 @@ using namespace std;
 #define TRUE 1
 #define FALSE 0
 
+/**
+ * @addtogroup SI_CACHE_TYPES
+ * @{
+ */
+
 #define SI_CACHE_FILE_VERSION           0x101u
 #define SI_CACHE_MAX_FREQUENCIES 255
 #define SI_CACHE_CRC_QUOTIENT 0x04C11DB7
@@ -66,13 +71,13 @@ typedef enum _SIFileType_t_ {
 typedef enum _siEntryState_
 {
     SIENTRY_UNSPECIFIED = 0, 
-    SIENTRY_PRESENT_IN_DCM = 0x01, // Present in DCM
-    SIENTRY_DEFINED = 0x02, // Defined in DCM
-    SIENTRY_MAPPED = 0x04, // Mapped in VCM
+    SIENTRY_PRESENT_IN_DCM = 0x01, //!< Present in DCM
+    SIENTRY_DEFINED = 0x02, //!< Defined in DCM
+    SIENTRY_MAPPED = 0x04, //!< Mapped in VCM
     SIENTRY_DEFINED_MAPPED = SIENTRY_PRESENT_IN_DCM | SIENTRY_DEFINED
-            | SIENTRY_MAPPED, // Marked defined in SVCT-DCM, mapped in SVCT-VCM
-    SIENTRY_DEFINED_UNMAPPED = SIENTRY_PRESENT_IN_DCM | SIENTRY_DEFINED, // Marked defined in SVCT-DCM, not mapped in SVCT-VCM
-    SIENTRY_UNDEFINED_MAPPED = SIENTRY_PRESENT_IN_DCM | SIENTRY_MAPPED, // Marked undefined in SVCT-DCM, mapped in SVCT-VCM
+            | SIENTRY_MAPPED, //!< Marked defined in SVCT-DCM, mapped in SVCT-VCM
+    SIENTRY_DEFINED_UNMAPPED = SIENTRY_PRESENT_IN_DCM | SIENTRY_DEFINED, //!< Marked defined in SVCT-DCM, not mapped in SVCT-VCM
+    SIENTRY_UNDEFINED_MAPPED = SIENTRY_PRESENT_IN_DCM | SIENTRY_MAPPED, //!< Marked undefined in SVCT-DCM, mapped in SVCT-VCM
     SIENTRY_UNDEFINED_UNMAPPED = SIENTRY_PRESENT_IN_DCM
 // Marked undefined SVCT-DCM, not mapped in SVCT-VCM
 } siEntryState;
@@ -156,46 +161,46 @@ typedef struct _LangSpecificStringList
 typedef struct _SourceNameEntry
 {
   bool appType;
-  uint32_t id;              // if appType=FALSE, sourceID otherwise appID
-  bool mapped;          // true if mapped by a virtual channel false for DSG service name
-  void *source_names;      // NTT_SNS, CVCT
-  void *source_long_names; // NTT_SNS
-  struct _SourceNameEntry* next;              // next source name entry
+  uint32_t id;              //!< if appType=FALSE, sourceID otherwise appID
+  bool mapped;          // !<True if mapped by a virtual channel false for DSG service name
+  void *source_names;      // !< NTT_SNS, CVCT
+  void *source_long_names; //!< NTT_SNS
+  struct _SourceNameEntry* next;              //!< Next source name entry
 } SourceNameEntry;
 
 struct siTableEntry
 {
     uint32_t ref_count;
-    uint32_t activation_time; // SVCT
+    uint32_t activation_time; //!< SVCT
     long long ptime_service;
     uint32_t ts_handle;
-    uint32_t program; // Program info for this service. Can be shared with other rmf_SiTableEntry elements,
-    uint32_t tuner_id; // '0' for OOB, start from '1' for IB
+    uint32_t program; // !<Program info for this service. Can be shared with other rmf_SiTableEntry elements,
+    uint32_t tuner_id; // !< '0' for OOB, start from '1' for IB
     int32_t valid;
     uint16_t virtual_channel_number;
-    int32_t isAppType; // for DSG app
-    uint32_t source_id; // SVCT
+    int32_t isAppType; //!< For DSG app
+    uint32_t source_id; //!< SVCT
     uint32_t app_id; //
     uint32_t dsgAttached;
-    uint32_t dsg_attach_count; // DSG attach count
+    uint32_t dsg_attach_count; //!< DSG attach count
     uint32_t state;
-    uint32_t channel_type; // SVCT
-    uint32_t video_standard; // SVCT (NTSC, PAL etc.)
-    uint32_t service_type; // SVCT (desc)
+    uint32_t channel_type; //!< SVCT
+    uint32_t video_standard; //!< SVCT (NTSC, PAL etc.)
+    uint32_t service_type; //!< SVCT (desc)
 
-    void * source_name_entry;      // Reference to the corresponding NTT_SNS entry
-    void *descriptions; // LVCT/CVCT (desc)
-    uint8_t freq_index; // SVCT
-    uint8_t mode_index; // SVCT
+    void * source_name_entry;      //!< Reference to the corresponding NTT_SNS entry
+    void *descriptions; //!< LVCT/CVCT (desc)
+    uint8_t freq_index; //!< SVCT
+    uint8_t mode_index; //!< SVCT
     uint32_t major_channel_number;
-    uint32_t minor_channel_number; // SVCT (desc)
+    uint32_t minor_channel_number; //!< SVCT (desc)
 
-    uint16_t program_number;       // SVCT
-    uint8_t  transport_type;       // SVCT (0==MPEG2, 1==non-MPEG2)
-    int32_t scrambled;            // SVCT
-    void* hn_stream_session;  // HN stream session handle
-    uint32_t hn_attach_count; // HN stream session PSI attach / registration count
-    siTableEntry* next; // next service entry
+    uint16_t program_number;       //!< SVCT
+    uint8_t  transport_type;       //!< SVCT (0==MPEG2, 1==non-MPEG2)
+    int32_t scrambled;            //!< SVCT
+    void* hn_stream_session;  //!< HN stream session handle
+    uint32_t hn_attach_count; //!< HN stream session PSI attach / registration count
+    siTableEntry* next; //!< next service entry
 } ;
 
 class SiManager
@@ -228,3 +233,8 @@ class SiManager
 };
 
 #endif // _SIMGR_H_
+
+/**
+ * @}
+ */
+
